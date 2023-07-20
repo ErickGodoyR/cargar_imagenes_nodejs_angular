@@ -77,7 +77,7 @@ export class AppComponent implements OnInit{
     reader.onload = (this.total_imagenes);
 
     console.log(this.total_imagenes);
-    //console de prueba
+    //console de prueba,,
     });
 
   }
