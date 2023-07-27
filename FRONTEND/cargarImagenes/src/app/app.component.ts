@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal  from 'sweetalert2';
+import { ImagenesService } from './imagenes.service';
 
 @Component({
   selector: 'app-root',
@@ -13,12 +14,16 @@ export class AppComponent implements OnInit{
   images = '';
   imgUrl = '/assets/noimage.png';
   multipleImages = [];
-  total_imagenes : any = [];
+  total_imagenes:any = [];
+  imgUrl2 = '../../../../BACKEND/public/uploads/';
+  //url:any = 'http://localhost:5000/uploads'; 
 
-  constructor(private http:HttpClient){}
+  constructor(private imagenesService:ImagenesService, private http:HttpClient){}
   
   ngOnInit(){
     this.mostrarImg();
+    //this.cargarTodo();
+  
   }  
 
   //Previsualización de la imagen a guardar
@@ -71,10 +76,10 @@ export class AppComponent implements OnInit{
 
   mostrarImg(){
     
-    this.http.get<any>('http://localhost:5000/uploads').subscribe(res => {
+    this.http.get<any>('http://localhost:5000/upload').subscribe(res => {
     this.total_imagenes = res;
     const reader = new FileReader();
-    reader.onload = (this.total_imagenes);
+    reader.onload = this.total_imagenes;
 
     console.log(this.total_imagenes);
     //console de prueba,,
@@ -82,6 +87,18 @@ export class AppComponent implements OnInit{
 
   }
 
+  /*
+  cargarTodo()
+  {
+    this.imagenesService.getImagenes().subscribe(
+      respuesta => {
+        console.log(respuesta);
+        this.total_imagenes=<any>respuesta;
+      },
+      err => console.log(err)
+    )
+  }
+  */
 
   deleteImg(id: any){
     Swal.fire({
@@ -101,5 +118,14 @@ export class AppComponent implements OnInit{
      
   }
 
+/*
+  linkImg(){
+    let str = url.replace('\\', '');
+    str = str.replace('\\', '/');
+    const URLImage = 'http://localhost:5000/upload';
+    const link = URLImage + str;
+    return link;
+  }
+*/
 
 }

@@ -6,12 +6,12 @@ const mysqlConnection = mysql.createConnection({
     user: 'root',
     password: 'admin',
     database: 'uploaddb',
-    multipleStatements: true
+    //multipleStatements: true
 });
 
 mysqlConnection.connect(function(err){
     if(err){
-        console.log(err);
+        console.error(err);
         return;
     }else{
         console.log('conectado correctamente a la bd');

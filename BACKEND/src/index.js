@@ -12,30 +12,47 @@ const app = express();
 //Middleware
 app.use(cors({origin:"*"}));
 app.use(bodyParser.json());
-app.use(express.json());
+//app.use(bodyParser.urlencoded({extended: false}));
+//app.use(express.json());
 app.use(morgan('dev'));
 
 //Ruta para guardar las imagenes
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+/*
+app.use('upload', express.static(path.join(__dirname, 'public/uploads')));
 const storage = multer.diskStorage({
     destination: (req, file, callBack) => {
-        callBack(null, 'uploads')
+        callBack(null, 'public/uploads')
     },
     filename: (req, file, callBack) => {
         callBack(null, file.originalname)
     }
 });
+*/
 
-const upload = multer({ storage:storage });
+app.use(express.static('./public/uploads'));
+
+const storage = multer.diskStorage({
+    filename: function (res, file, cb) {
+        const ext = file.originalname.split(".").pop();
+        const fileName = Date.now();
+        cb(null, `${fileName}.${ext}`);
+    },
+    destination: function (res, file, cb) {
+        cb(null, `./public/uploads`)
+    }
+})
+
+const upload = multer({ storage });
 /* */
 
 
 
 
-app.get("/uploads", (req, res) => {
+app.get('/upload', (req, res) => {
     mysqlConnection.query('SELECT * FROM files', (err, rows, fields) => {
         if(!err){
             res.json(rows);
+            //res.sendFile(fields);
         }else{
             console.log(err);
         }
