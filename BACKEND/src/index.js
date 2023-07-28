@@ -12,25 +12,12 @@ const app = express();
 //Middleware
 app.use(cors({origin:"*"}));
 app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({extended: false}));
-//app.use(express.json());
 app.use(morgan('dev'));
 
-//Ruta para guardar las imagenes
-/*
-app.use('upload', express.static(path.join(__dirname, 'public/uploads')));
-const storage = multer.diskStorage({
-    destination: (req, file, callBack) => {
-        callBack(null, 'public/uploads')
-    },
-    filename: (req, file, callBack) => {
-        callBack(null, file.originalname)
-    }
-});
-*/
-
+//Escoger la carpeta a utilizar
 app.use(express.static('./public/uploads'));
 
+//Ruta para guardar las imagenes (Multer)
 const storage = multer.diskStorage({
     filename: function (res, file, cb) {
         const ext = file.originalname.split(".").pop();
@@ -46,13 +33,12 @@ const upload = multer({ storage });
 /* */
 
 
-
-
+//RUTAS
+//Ruta para obtener todos los registros
 app.get('/upload', (req, res) => {
     mysqlConnection.query('SELECT * FROM files', (err, rows, fields) => {
         if(!err){
             res.json(rows);
-            //res.sendFile(fields);
         }else{
             console.log(err);
         }
@@ -75,7 +61,6 @@ app.post('/file', upload.single('file'), (req, res, next) => {
         const error = new Error('No File')
         error.httpStatusCode = 400;
         return next(error);
-        //return next(error);
     }
 
     res.send(file);
@@ -86,7 +71,7 @@ app.post('/file', upload.single('file'), (req, res, next) => {
 });
 /* */
 
-
+//Eliminar registro seleccionado
 app.delete('/delete/:id', (req, res) => {
 
     const { id } = req.params;
@@ -106,6 +91,8 @@ function deleteFile(id) {
     });
 
 }
+/* */
+
 
 //Puerto de conexión
 app.set("port", process.env.PORT || 5000);

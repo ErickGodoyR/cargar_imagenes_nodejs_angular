@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Swal  from 'sweetalert2';
-import { ImagenesService } from './imagenes.service';
 
 @Component({
   selector: 'app-root',
@@ -15,14 +14,12 @@ export class AppComponent implements OnInit{
   imgUrl = '/assets/noimage.png';
   multipleImages = [];
   total_imagenes:any = [];
-  imgUrl2 = '../../../../BACKEND/public/uploads/';
-  //url:any = 'http://localhost:5000/uploads'; 
-
-  constructor(private imagenesService:ImagenesService, private http:HttpClient){}
+  
+  constructor(private http:HttpClient){}
   
   ngOnInit(){
+
     this.mostrarImg();
-    //this.cargarTodo();
   
   }  
 
@@ -40,7 +37,7 @@ export class AppComponent implements OnInit{
     }
   }
 
-  
+  //Seleccionar varias imagenes
   selectMultipleImage(event:any) {
     if (event.target.files.length > 0) {
       this.multipleImages = event.target.files;
@@ -52,7 +49,6 @@ export class AppComponent implements OnInit{
     const formData = new FormData();
     formData.append('file', this.images);
    
-
     this.http.post<any>('http://localhost:5000/file', formData).subscribe(
       (res) => console.log(res,  Swal.fire({
           icon: 'success',
@@ -70,10 +66,12 @@ export class AppComponent implements OnInit{
           text: 'Parece que no subio nada!!' 
           })
     );
+
+    //imagen previa
    this.imgUrl = '/assets/noimage.png';  
   }
 
-
+  //Mostrar imagenes
   mostrarImg(){
     
     this.http.get<any>('http://localhost:5000/upload').subscribe(res => {
@@ -82,24 +80,12 @@ export class AppComponent implements OnInit{
     reader.onload = this.total_imagenes;
 
     console.log(this.total_imagenes);
-    //console de prueba,,
+    
     });
 
   }
 
-  /*
-  cargarTodo()
-  {
-    this.imagenesService.getImagenes().subscribe(
-      respuesta => {
-        console.log(respuesta);
-        this.total_imagenes=<any>respuesta;
-      },
-      err => console.log(err)
-    )
-  }
-  */
-
+  //Eliminar registro
   deleteImg(id: any){
     Swal.fire({
       icon: 'info',
@@ -118,14 +104,5 @@ export class AppComponent implements OnInit{
      
   }
 
-/*
-  linkImg(){
-    let str = url.replace('\\', '');
-    str = str.replace('\\', '/');
-    const URLImage = 'http://localhost:5000/upload';
-    const link = URLImage + str;
-    return link;
-  }
-*/
 
 }
